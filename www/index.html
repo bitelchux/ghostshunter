@@ -39,8 +39,8 @@
               };
       } ());
       function getURLParam(strParamName) {
-          if (strParamName == "pg") return "si";
-          if (strParamName == "l") return "1";
+//          if (strParamName == "pg") return "si";
+//          if (strParamName == "l") return "1";
           var strReturn = "";
           var strHref = window.location.href;
           if (strHref.indexOf("?") > -1) {
@@ -56,13 +56,6 @@
           }
           return strReturn;
       }
-<<<<<<< HEAD
-<<<<<<< HEAD
-      
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
       function getPhoneGapPath() {
 
           var path = window.location.pathname;
@@ -111,10 +104,6 @@
       function delCookie(name, path, domain) {
           if (getCookie(name)) {
               setCookie(name, "", new Date("January 01, 2000 00:00:01"), path, domain);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
           }
       }
       var levels = new Array(30);
@@ -162,14 +151,10 @@
               if (micookie.indexOf(" level") == 0) {
                   aString.push(micookie)
               }
-<<<<<<< HEAD
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
+
           }
           return aString;
       }
-<<<<<<< HEAD
-=======
       var levels = new Array(30);
       cont = 0;
       //speed desde 0.5 hasta 3
@@ -218,12 +203,7 @@
           }
           return aString;
       }
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
-          }
-          return aString;
-      }
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
+
       function getGlobalSituation() {
           var misfases = listCookies();
           misfases.sort();
@@ -490,15 +470,7 @@
            this.soundssrcs = []
            this.sprites = []
            this.sounds = []
-<<<<<<< HEAD
-<<<<<<< HEAD
-           
-=======
 
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
-
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
            this.loadAll = function () {
                //alert("ini load");
                var loadedImagesCount = 0;
@@ -592,13 +564,7 @@
        var rangey = 55;
        var bswitch = 0;
        var paintRecal = true; // recalcular widhts, repintar fondo...
-<<<<<<< HEAD
-<<<<<<< HEAD
-      
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
+
        var ML = new MediaLibrary();
 
        //statuses pajaros
@@ -799,31 +765,14 @@
                div.style.top = y + "px";
                div.yold = y
            }
-<<<<<<< HEAD
-<<<<<<< HEAD
+
            if (div.children[0].title=="") {
                div.children[0].title="ok"
                div.children[0].src = img.src;
 
 
            }
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-
-
            if (paintRecal) {
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
-               div.children[0].src = img.src;
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
-               div.children[0].src = img.src;
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
                div.style.width = (w) + "px";
                div.style.height = (h) + "px";
                div.children[0].width = (w)
@@ -1057,14 +1006,7 @@
                document.getElementById("debugOutput").innerHTML = "INFO:Drive the ghost at the trap by tapping on screen<BR/><font style='color:red'>Don't touch the birds</font>";
                gamestatus = 1;
                paintRecal = true;
-<<<<<<< HEAD
-<<<<<<< HEAD
-               
                ML.sounds["rayo"].play();
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
                mouse.x = realw - ghost.w;
                mouse.y = 0;
            }
@@ -1434,18 +1376,10 @@
                    for (var i = 0; i < pajaros.length; i++) {
                        movepajaro(i);
                        if (checktouching(ghost, pajaros[i]) == 1) {
-<<<<<<< HEAD
-<<<<<<< HEAD
                            gamestatus = 9;
                            ML.sounds["rayo"].pause();
                            ML.sounds["explo"].play();
                            
-=======
-                           gamestatus = 9
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
-                           gamestatus = 9
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
                        }
                        if (pajaros[i].status != ESPERAR)
                            mydrawimage(pajaros[i].div, getanim(6), pajaros[i].xPos, pajaros[i].yPos, pajarow, pajaroh);
@@ -1738,23 +1672,7 @@
            ML.spritessrcs.push("aghost1|ghost" + levels[currentlevel].tipoghost + "1.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("aghosta0|ghost" + levels[currentlevel].tipoghost + "a0.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("aghosta1|ghost" + levels[currentlevel].tipoghost + "a1.png|" + ratiow + "|" + ratioh)
-<<<<<<< HEAD
-<<<<<<< HEAD
            ML.spritessrcs.push("pajaro0|skull.gif|" + ratiow + "|" + ratioh)
-          
-=======
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-           ML.spritessrcs.push("pajaro0|pajaro0.png|" + ratiow + "|" + ratioh)
-           ML.spritessrcs.push("pajaro1|pajaro1.png|" + ratiow + "|" + ratioh)
-           ML.spritessrcs.push("pajaro2|pajaro1.png|" + ratiow + "|" + ratioh)
-           ML.spritessrcs.push("pajaro3|pajaro3.png|" + ratiow + "|" + ratioh)
-           ML.spritessrcs.push("pajaro4|pajaro3.png|" + ratiow + "|" + ratioh)
-           ML.spritessrcs.push("pajaro5|pajaro5.png|" + ratiow + "|" + ratioh)
-<<<<<<< HEAD
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
            ML.spritessrcs.push("aplayer0|player0.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("aplayer1|player1.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("aplayerfin|player2.png|" + ratiow + "|" + ratioh)
@@ -1777,16 +1695,10 @@
            ML.spritessrcs.push("fondo|" + levels[currentlevel].bg + "|" + ratiow + "|" + ratioh)
        }
        ML.soundssrcs.push("pium|pium2.mp3")
-<<<<<<< HEAD
-<<<<<<< HEAD
        ML.soundssrcs.push("rayo|rayo.mp3|loop")
        ML.soundssrcs.push("explo|explo1.mp3")       
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
-=======
->>>>>>> bbf7b424c05c162433affe6b755f5c638482b9ef
        ML.soundssrcs.push("bgm|fase1.ogg|loop")
-       ML.soundssrcs.push("rayocaptura|rayo.mp3|loop")
+
 
 
        //ML.soundssrcs.push("fx1|bell1.ogg")                  
