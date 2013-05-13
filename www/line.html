@@ -1,0 +1,70 @@
+<html>
+<body>
+<script>
+function linei(rx,ry,rw,rh,l1x,l1y,l2x,l2y){
+  var rect = {width: rw, height: rh, x: rx, y:ry};
+  var p1 = {x: l1x, y: l1y};
+  var p2 = {x: l2x, y: l2y};
+  var p1x = p1.x;
+  var p2x = p2.x;
+  var rectX = rect.x;
+  var rectWidth = rect.width;
+
+  // check if the projections onto the x axis overlap
+  if (p1x < p2x && (rectX > p2x || rectX + rectWidth < p1x) || (rectX > p1x || rectX + rectWidth < p2x)) {
+    return false;
+  }
+
+  var p1y = p1.y;
+  var p2y = p2.y;
+  var rectY = rect.y;
+  var rectHeight = rect.height;
+
+  // check if the projections onto the y axis overlap
+  if (p1y < p2y && (rectY > p2y || rectY + rectHeight < p1y) || (rectY > p1y || rectY + rectHeight < p2y)) {
+    return false;
+  }
+
+  // Check whether all 4 corners are on the same side of the segment. If they are,
+  // we know there is no intersection.
+  //
+  // F(x, y) = (y2-y1)x + (x1-x2)y + (x2*y1-x1*y2)
+  //
+  // Do this by checking the sign of F(x, y) for all 4 corners of the rectangle.
+  // If all the signs match, then they are all on the same side of the segment.
+  // If they differ, it means that the the segment overlaps (because we already checked that)
+  // its shadow on the x and y axes overlaps the rectangles shadows.
+  var a = p2y - p1y;
+  var b = p1x - p2x;
+  var c = p2x * p1y - p1x * p2y;
+  var bottomLeft = rectX * a + rectY * b + c;
+
+  var isNegative = bottomLeft < 0;
+
+  var aWidth = a * rectWidth;
+  var x = bottomLeft + aWidth;
+  if (isNegative !== x < 0) {
+    return true;
+  }
+
+  var bHeight = b * rectHeight;
+  var y = bottomLeft + bHeight;
+  if (isNegative !== y < 0) {
+    return true;
+  }
+
+  var z = y + aWidth;
+  if (isNegative !== z < 0) {
+    return true;
+  }
+
+  if (!(bottomLeft && x && y && z)) {
+    return true;
+  }
+
+  // all 4 of the rectangles corners are on the same side of the line
+  return false;
+}
+</script>
+</body>
+</html>

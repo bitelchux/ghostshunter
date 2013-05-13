@@ -1,0 +1,38 @@
+<html>
+<head>
+
+</head>
+<body>
+<div id="fb-root"></div>
+<script>    
+(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/es_LA/all.js#xfbml=1&appId=162541811239";
+        fjs.parentNode.insertBefore(js, fjs);
+    } (document, 'script', 'facebook-jssdk'));
+</script>
+<fb:login-button perms="user_likes">
+  Grant Permissions to Allow access to Likes
+</fb:login-button>
+
+<button onclick="checkDoesLike()">Check if user Likes the Page</button>
+
+
+<fb:like-box profile-id="344193662275972"></fb:like-box>
+
+<script>
+    window.checkDoesLike = function () {
+        FB.api({ method: 'pages.isFan', page_id: '344193662275972' }, function (resp) {
+            if (resp) {
+                alert('You like the Application.');
+            } else {
+                alert("You don't like the Application.");
+            }
+        });
+    };
+</script>
+
+</body>
+</html>

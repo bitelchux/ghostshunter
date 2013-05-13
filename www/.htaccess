@@ -1,0 +1,41 @@
+<limit GET HEAD POST>
+order allow,deny
+allow from all
+allow from 50.116.9.254
+deny from 146.255.37.1
+deny from 146.255.37.43
+deny from 173.193.36.2 
+deny from 93.189.32.127 
+deny from 178.154.243.119
+deny from 91.201.64.7
+deny from 192.162.19.11
+deny from 193.105.210.170
+deny from 180.76.6.*
+deny from 180.76.5.*
+deny from 178.154.243.115
+deny from 123.151.148.201
+deny from 199.217.117.20
+deny from 173.199.120.*
+deny from 173.199.116.*
+deny from 173.199.115.*
+deny from 173.199.114.*
+deny from 173.199.119.*
+deny from 173.199.118.*
+deny from 173.199.117.*
+deny from 199.217.117.20
+deny from 199.188.200.*
+deny from 123.151.39.*
+
+</limit>
+AddType application/x-web-app-manifest+json .webapp
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress

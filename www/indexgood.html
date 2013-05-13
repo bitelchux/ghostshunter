@@ -1,0 +1,587 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" manifest="/m?manifest=1"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Feed the zooooombie</title>
+<style>
+
+*{
+font-family:Verdana;
+color:Red;
+font-weight:bold;
+}
+
+canvas{
+margin:0px;
+padding:0px;
+border-bottom:red dashed;
+}
+
+body{
+margin:0px;
+background:black;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body onload="showinfo()">
+<div style="width:300px;text-align:center">
+    <div id="loading">
+        <img src="logo.png" />
+        <img src="loading.png" />
+        <br />
+        <img src="loadingbar.gif" />
+    </div>
+    <div id="info" onclick="initgame()" style="cursor:pointer;">
+        <img src="logo.png" />
+      	<h2>Drag and drop the zombie in its "Food"</h2>
+    </div> 
+    <div id="youwin" style="display:none" onclick="nextlevel()">
+    <img src="youwin.png" />
+    </div>
+    <div id="youlost" style="display:none"  onclick="nextlevel()">
+    <img src="youlost.png" />
+    </div>
+    <div id="gamecomplete" style="display:none" onclick="window.location.reload()">
+    <img src="gamecomplete.png" />
+    </div>    
+    <div id="main" style="display:none">
+	    <canvas  ontouchmove="touchMove(event);" ontouchstart="touchStart(event);" id="canvas" height="340" width="300">how can you use the internet?</canvas>
+	    <div id="txt1" style="text-align:center;font-size:18px;color:red"></div>
+	    <div id="txt2" style="text-align:center;font-size:18px;color:white"></div>
+	    
+    </div>
+
+
+    <div id="imagenes" style="display:none">
+       <img src="ghosta0.png" id="z1" />
+       <img src="ghosta1.png" id="z0" />
+       <img src="z2-0.png" id="z2-0" />
+       <img src="z2-1.png" id="z2-1" />
+       <img src="z3-0.png" id="z3-0" />
+       <img src="z3-1.png" id="z3-1" />       
+       <img src="o0.png" id="o0" />
+       <img src="o1-0.png" id="o1-0" />
+       <img src="o1-1.png" id="o1-1" />
+        <img src="mirilla.png" id="item1" /> 
+        
+        <img src="gamecomplete.png" />
+        <img src="youlost.png" />
+        <img src="youwin.png" />
+        <img src="fondo.jpg" id="fondo" />        
+    </div>
+</div>	
+<script type="text/javascript">
+
+    var ctx;
+    // our ball object holder
+    var balls = new Array();
+    // mouse position cache
+    var mouse = { x: -100, y: -100 };
+    // our prey we want to hunt
+
+    // cache 2*PI for arc()
+    
+    var circle = Math.PI * 2
+    var tries = 1;
+    var score = 0;
+    var playerw = 40
+    var playerh = 40;
+    var mirillaw = 10;
+    var mirillah = 10;    
+    var canvasw = 300;
+    var canvash = 340;
+    var max_score = 0;
+    var inc_score = 15;
+    var gamestatus = "none"
+    var gs_inicial = "gs_inicial";
+    var gs_jugando = "gs_jugando";
+    var gs_win1 = "gs_win1";
+    var gs_win2 = "gs_win2";
+    var gs_dead1 = "gs_dead1";
+    var gs_dead2 = "gs_dead2";
+    var nivel = 0;
+    var targetinmovil = 0;
+    var targetmovil = 1;
+    var targetquehuye = 2;
+    var target;
+    var tipotarget = targetinmovil;
+	var clock_ani=0;
+	var clock_ani_max=19;
+	var niveles = new Array(50);
+	//velocidadmax bolas:10;velocidadmaxninohuyye:10;
+	var cont = 0;
+	
+	niveles[cont++] = { numbolas: 1, velocidadbolas: 3, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 2, velocidadbolas: 3, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 3, velocidadbolas: 3, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 2, velocidadbolas: 5, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 3, velocidadbolas: 5, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 4, velocidadbolas: 3, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 3, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 4, velocidadbolas: 5, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 5, tammirilla: 20, tipotarget: targetinmovil, velocidadtarget: 1 }
+
+	niveles[cont++] = { numbolas: 1, velocidadbolas: 4, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 2, velocidadbolas: 4, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 3, velocidadbolas: 5, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 2, velocidadbolas: 7, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 3, velocidadbolas: 7, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 4, velocidadbolas: 4, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 5, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 4, velocidadbolas: 7, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 7, tammirilla: 20, tipotarget: targetmovil, velocidadtarget: 3 }
+
+	niveles[cont++] = { numbolas: 1, velocidadbolas: 4, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 5 }
+	niveles[cont++] = { numbolas: 2, velocidadbolas: 4, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 5 }
+	niveles[cont++] = { numbolas: 3, velocidadbolas: 5, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 5 }
+	niveles[cont++] = { numbolas: 2, velocidadbolas: 7, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 6 }
+	niveles[cont++] = { numbolas: 3, velocidadbolas: 7, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 6 }
+	niveles[cont++] = { numbolas: 4, velocidadbolas: 4, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 6 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 5, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 7 }
+	niveles[cont++] = { numbolas: 4, velocidadbolas: 7, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 7 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 7, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 7 }
+
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 8, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 5 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 9, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 5 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 10, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 7 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 9, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 7 }
+	niveles[cont++] = { numbolas: 5, velocidadbolas: 9, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 10 }
+	niveles[cont++] = { numbolas: 6, velocidadbolas: 10, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 10 }
+	niveles[cont++] = { numbolas: 6, velocidadbolas: 12, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 12 }
+	niveles[cont++] = { numbolas: 6, velocidadbolas: 13, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 13 }
+	niveles[cont++] = { numbolas: 6, velocidadbolas: 14, tammirilla: 20, tipotarget: targetquehuye, velocidadtarget: 15 }
+	
+	var anims = new Array(1);
+	cont = 0;
+	anims[cont++] = { src: 'z', numframes: 2, cont: 0, max: 4, current: 0 }
+	
+
+    var nivelactual = { numbolas: 2, velocidadbolas: 10, tammirilla: 100, tipotarget: targetinmovil, velocidadtarget: 1 };
+    var gotit = 0;    
+    //estado 0 normal,1 invulnerable
+    var p1 = { estado: 0, contestado: 0 }
+    function $(id) {
+        return document.getElementById(id);
+    }
+    function setprey() {
+        target = new Target(Math.random() * (canvasw - 40), Math.random() * (canvash - 40), nivelactual.velocidadtarget, nivelactual.velocidadtarget, nivelactual.tipotarget);        
+        p1.estado = 0;
+    }
+    function nextlevel() {
+        $("youwin").style.display = "none"
+        $("youlost").style.display = "none"
+        
+        if (nivel<niveles.length-3){
+	        $("main").style.display = "block"
+        	startnivel();        
+    	}
+        else{
+	    	$("gamecomplete").style.display = "block"  
+        }
+        
+
+    }
+function testhitpixel(x1,y1,w1,h1,px,py) {
+  
+    var x_offset, y_offset;
+    var left, right, top, bottom;
+
+
+    left = x1;
+    right = left + w1;
+    top = y1;
+    bottom = top + h1;
+
+    if (px < left) return(0);
+    if (px > right) return(0);
+
+    if (py < top) return(0);
+    if (py > bottom) return(0); 
+    return(1);
+
+}
+    
+    function testhit(x1,y1,x2,y2,w1,h1,w2,h2) {  
+        var left1, left2;
+        var right1, right2;
+        var top1, top2;
+        var bottom1, bottom2;
+
+        left1 = x1;
+        left2 = x2;
+        right1 = x1+w1;
+        right2 = x2+w2;
+        top1 = y1;
+        top2 = y2;
+        bottom1 = y1 + h1;
+        bottom2 = y2+h2;
+        if (bottom1 < top2) return(0);
+        if (top1 > bottom2) return(0);
+        if (right1 < left2) return(0);
+        if (left1 > right2) return(0);
+        return(1);
+    };
+
+    
+    function setscreen() {
+        if (gamestatus == gs_win2) {
+            nivel++;
+            $("youwin").style.display = "block"
+            $("main").style.display = "none"
+        }
+        if (gamestatus == gs_dead2) {
+	        
+	        
+	        
+            $("youlost").style.display = "block"
+            $("main").style.display = "none"
+        }        
+    }
+    function updateStat(gs) {
+        gamestatus = gs;
+        setscreen();
+        /*
+        $('tries').innerHTML = tries;
+        $('score').innerHTML = score;
+        $('max_score').innerHTML = max_score;
+        */
+    }
+
+    function Ball(x, y, xsee, ysee) {
+
+        this.x = x;
+        this.y = y;
+        this.xsee = xsee;
+        this.ysee = ysee;
+
+        this.move = function() {
+        
+            if (this.x > canvasw - 5) {
+                this.x = canvasw - 5;
+                this.xsee = -this.xsee;
+            } else if (this.x < 5) {
+                this.x = 5;
+                this.xsee = -this.xsee;
+            }
+
+            if (this.y > canvash - 5) {
+                this.y = canvash - 5;
+                this.ysee = -this.ysee;
+            } else if (this.y < 5) {
+                this.y = 5;
+                this.ysee = -this.ysee;
+            }
+
+            this.x += this.xsee;
+            this.y += this.ysee;
+  
+            ctx.beginPath();            
+            ctx.arc(this.x, this.y, 5, 0, circle, true);
+            ctx.closePath();
+            
+
+            /*
+            var mirilla = new Image();
+            mirilla.src = "mirilla.png";
+            */
+
+            ctx.drawImage($("item1"), this.x - (mirillaw / 2), this.y - (mirillah / 2), mirillaw, mirillah);
+
+
+            //ctx.fill();
+        }
+    }
+
+    function Target(x, y, xsee, ysee,tipotarget) {
+
+        this.x = x;
+        this.y = y;
+        this.xsee = xsee;
+        this.ysee = ysee;
+
+        this.tipo = tipotarget;
+        this.visible = 0;
+        this.move = function() {
+            if (this.tipo != targetinmovil) {
+                if (this.x > canvasw - 5) {
+                    this.x = canvasw - 5;
+                    this.xsee = -this.xsee;
+                    if (this.tipo == targetquehuye) {
+                        if (Math.abs((this.y + this.ysee) - mouse.y) > Math.abs(this.y - mouse.y))
+                            this.ysee = this.ysee;
+                        if (Math.abs((this.y - this.ysee) - mouse.y) > Math.abs(this.y - mouse.y))
+                            this.ysee = -this.ysee;
+                    }
+
+                } else if (this.x < 5) {
+                    this.x = 5;
+                    this.xsee = -this.xsee;
+                    if (this.tipo == targetquehuye) {
+                        if (Math.abs((this.y + this.ysee) - mouse.y) > Math.abs(this.y - mouse.y))
+                            this.ysee = this.ysee;
+                        if (Math.abs((this.y - this.ysee) - mouse.y) > Math.abs(this.y - mouse.y))
+                            this.ysee = -this.ysee;
+                    }
+                }
+
+                if (this.y > canvash - 5) {
+                    this.y = canvash - 5;
+                    this.ysee = -this.ysee;
+                    if (this.tipo == targetquehuye) {
+                        if (Math.abs((this.x + this.xsee) - mouse.x) > Math.abs(this.x - mouse.x))
+                            this.xsee = this.xsee;
+                        if (Math.abs((this.x - this.xsee) - mouse.x) > Math.abs(this.x - mouse.x))
+                            this.xsee = -this.xsee;
+                    }
+                } else if (this.y < 5) {
+                    this.y = 5;
+                    this.ysee = -this.ysee;
+                    if (this.tipo == targetquehuye) {
+                        if (Math.abs((this.x + this.xsee) - mouse.x) > Math.abs(this.x - mouse.x))
+                            this.xsee = this.xsee;
+                        if (Math.abs((this.x - this.xsee) - mouse.x) > Math.abs(this.x - mouse.x))
+                            this.xsee = -this.xsee;
+                    }
+
+                }
+
+                this.x += this.xsee;
+                this.y += this.ysee;
+            }
+        }
+    }
+
+
+    function createBalls(cuantas,velocidad) {
+        balls = new Array();
+        for (var i = 0; i < cuantas; i++) {
+            do {
+                x = Math.random() * (canvasw - 5);
+                y = Math.random() * (canvash - 5);
+            } while (target.x <= x + 35 && x <= target.x + 55 && target.y <= y + 35 && y <= target.y + 55);
+            //            balls.push(new Ball(x, y, Math.random() * 5.5 - 2.75, Math.random() * 5.5 - 2.75));
+            balls.push(new Ball(x, y, velocidad, velocidad));
+        }
+    }
+
+	function showinfo(){
+		$("loading").style.display = "none";
+        $("info").style.display = "block";
+	}
+    function initgame() {
+        $("info").style.display = "none";
+        $("main").style.display = "block";
+        ctx = $('canvas').getContext('2d');
+        gamestatus = gs_jugando;        
+        startnivel();
+    }
+    function startnivel() {
+        gamestatus = gs_jugando;
+        p1.estado = 1;    
+
+        nivelactual = niveles[nivel]
+        mirillaw = nivelactual.tammirilla
+        mirillah = nivelactual.tammirilla        
+        
+        score += Math.floor(inc_score);
+        inc_score = 15;
+        setprey();
+        createBalls(nivelactual.numbolas, nivelactual.velocidadbolas);        
+        setTimeout(function() { target.visible = 1; }, 2000)
+		mouse.x = 100;
+		mouse.y = 100;
+		$("txt1").innerHTML = "Level:" + nivel;
+		$("txt1").innerHTML = $("txt1").innerHTML + " - Tries:" + tries
+		
+        clock();
+
+    }
+ function rayo(ctx){
+	 	var r1xold,r1yold,r2xold,r2yold;
+	 	
+	 	r1xold=canvasw/2;
+	 	//r1yold=canvash/2
+	 	
+	 	r1yold=0;
+	 	//r2yold=0;
+	 	
+	 	var pasoy=Math.round(canvash/20);
+	 	var pasox=Math.round(10);
+	 	ctx.beginPath();
+	 	ctx.moveTo(r1xold,r1yold);
+		for (i=0;i<19;i++){			
+			var xrandom = Math.round(pasox*Math.random());
+			
+			var newx=r1xold+xrandom;
+			if (r1xold+xrandom>mouse.x)
+				newx=r1xold-xrandom			
+			
+			ctx.lineTo(newx,r1yold+pasoy);
+			//ctx.arcTo(r1xold,r1yold,newx,r1yold+pasoy,10);
+			//$("txt2").innerHTML=(newx+"*"+(r1yold+yrandom))
+			
+			r1xold=newx;
+			r1yold = r1yold + pasoy
+			if (r1yold + pasoy > mouse.y)
+			    break;
+			
+		}
+		
+		ctx.lineTo(mouse.x,mouse.y);
+		//ctx.endPath();
+		ctx.stroke();
+
+}
+function getanim(idx) {
+
+    var img = anims[idx];
+
+    if (img.cont++ > img.max) {
+        img.cont = 0;
+        if (img.current + 1 < img.numframes) {
+            img.current++
+        }
+        else {
+            img.current = 0;
+        }
+    }
+    return $(img.src + img.current);
+}    
+    function clock() {
+        
+        // global clear is faster for many balls
+        clock_ani=clock_ani+1
+		if (clock_ani>clock_ani_max)
+			clock_ani=0;
+
+        //ctx.clearRect(0, 0, canvasw, canvash);      
+        ctx.drawImage($("fondo"), 0,0,canvasw,canvash);
+        if (target.visible == 1) {
+            //ctx.fillStyle = "#000000";
+            //ctx.fillRect(target.x, target.y, 20, 20);
+            if (target.tipo == targetinmovil)
+                ctx.drawImage($("o0"), target.x, target.y, 40, 40);
+            else {            
+                ctx.drawImage($("o1-"+parseInt(clock_ani/10)), target.x, target.y, 40, 40);
+            }
+        }       
+        if (gamestatus == gs_jugando) {	
+	        ctx.lineWidth = 3;
+	        ctx.strokeStyle = "#0000ff";       	       
+	        rayo(ctx);
+			ctx.strokeStyle = "#ff0000";       	       
+			rayo(ctx);
+			ctx.strokeStyle = "#ffffff";       	       
+			rayo(ctx);	        
+	        
+            target.move();
+            ctx.drawImage(getanim(0), mouse.x - (playerw / 2), mouse.y - (playerh / 2), playerw, playerh);
+            ctx.fillStyle = "#333";            
+            for (var i = 0; i < balls.length; i++) {
+                balls[i].move();
+
+                if (p1.estado != 1 && target.visible == 1) {
+                    if (testhit(mouse.x+5,mouse.y,balls[i].x,balls[i].y,playerw-5,playerh,mirillaw,mirillah)==1){
+                /*
+                    if (balls[i].x >= mouse.x
+                    && balls[i].x <= mouse.x + playerw
+                    && balls[i].y <= mouse.y + playerh
+                    && balls[i].y >= mouse.y) {
+                */  
+                    //&& ((mouse.x - balls[i].x) * (mouse.x - balls[i].x) + (mouse.y - balls[i].y) * (mouse.y - balls[i].y)) <= 225) {
+                        balls = new Array();
+                        if (max_score < score) {
+                            max_score = score;
+                        }
+
+                        score = 0;
+                        tries++;
+                        gamestatus = gs_dead1;
+                        setTimeout(function() { updateStat(gs_dead2) }, "1000");
+
+                    }
+                }
+            }
+
+            if (inc_score > 5.5) inc_score -= 0.2;
+            window.setTimeout(function (){clock()}, 50);
+        }
+
+        if (gamestatus == gs_dead1) {
+
+			$("txt2").innerHTML = "Ops!!";
+            ctx.drawImage($("z2-" + parseInt(clock_ani/10)), mouse.x - (playerw / 2), mouse.y - (playerh / 2), playerw, playerh);            
+            window.setTimeout(function (){clock()}, 50);
+        }
+        
+        if (gamestatus == gs_win1) {
+	        target.visible = 0;
+	        
+            $("txt2").innerHTML = "Braaaaaiiinnn";
+            ctx.drawImage($("z3-" + parseInt(clock_ani/10)), mouse.x - (playerw / 2), mouse.y - (playerh / 2), playerw, playerh);            
+            window.setTimeout(function (){clock()}, 50);
+           
+            
+        }
+        
+        
+    }
+    //alert(document.body.ontouchstart);
+    if (typeof (document.body.ontouchstart) == "undefined") {
+        document.onmousemove = function(e) {
+            if (gamestatus == gs_jugando) {
+                mouse.x = e.pageX;
+                mouse.y = e.pageY;
+                /////////////
+                if (target.visible == 1)
+                //if (target.x <= mouse.x + 10 && mouse.x <= target.x + 30 && target.y <= mouse.y + 10 && mouse.y <= target.y + 30) {
+                if (testhitpixel(target.x,target.y,playerw-5,playerh,mouse.x+5,mouse.y)==1){
+                    gamestatus = gs_win1;
+                    setTimeout(function() { updateStat(gs_win2) }, "2000");
+
+                }
+            }
+        }
+    }
+    else {
+        function touchMove(event) {
+            event.preventDefault();
+            if (gotit==1)
+                if (gamestatus == gs_jugando) {
+                    curX = event.touches[0].pageX;
+                    curY = event.touches[0].pageY;
+
+                    //$("score").innerHTML = curY + "-" + mouse.y;
+                    mouse.x = curX;
+                    mouse.y = curY;
+                    if (target.visible == 1)
+                        if (target.x <= mouse.x + 10 && mouse.x <= target.x + 30 && target.y <= mouse.y + 10 && mouse.y <= target.y + 30) {
+	                        gamestatus = gs_win1;
+	                        setTimeout(function() { updateStat(gs_win2) }, "2000");	
+	                    }
+                }
+        }
+        function touchStart(e) {
+            y = e.touches[0].pageY;
+            x = e.touches[0].pageX;
+            if (Math.abs(mouse.y - y) > 40 || Math.abs(mouse.x - x) > 40) {
+                $("txt2").innerHTML = "Tap ABOVE the zombie to move 'It'";
+                gotit = 0;
+            }
+            else {
+                gotit = 1;
+                $("txt2").innerHTML = "Got It";
+            }
+        }
+
+    }
+
+</script>	
+</body>
+</html>

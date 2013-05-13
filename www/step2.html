@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml" manifest="/m?manifest=1"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Android and Iphone Web Apps</title>
+
+    
+    <style>
+        #fuel { position: absolute; top: 25; left: 10; border: 1px solid black; }                        
+        /* Debugging output */
+        #debugOutput { position: absolute; top: 100; left: 10; }
+    </style>
+    
+    <script>
+        var ctx;
+        var canvasw = 300;
+        var canvash = 350;
+        var ghost = { xPos: 150, yPos: 4,dx: 0,dy: 0, w: 60, h: 60,tox:150, toy:4}
+        var trap = { xPos: 100, yPos: 200, w: 150, h: 100}
+        var gamestatus=1 //0 libre,1 capturado,2 gana,3 pierde
+        var fuel = 200;
+        var gravity = .005;
+        var lander = null;
+        var landerHeight = 0;
+        var landerWidth = 0;
+        var timerkey = null;
+        
+        var anims = new Array(2);
+        var cont = 0;
+        anims[cont++] = { src: 'aghost', numframes: 2, cont: 0, max: 4, current: 0 }
+        anims[cont++] = { src: 'aghosta', numframes: 2, cont: 0, max: 4, current: 0 }
+        anims[cont++] = { src: 'ef', numframes: 3, cont: 0, max: 2, current: 0 }
+        var levels = new Array(2);
+        cont = 0;
+        levels[cont++] = { txt: 'Paris', gravity: .015, rangey: 20, fuel:200};
+        var currentlevel=0;        
+        function $(id) {
+            return document.getElementById(id);
+        }
+        function getanim(idx) {
+        
+            var img = anims[idx];
+            
+            if (img.cont++ > img.max) {
+                img.cont = 0;
+                if (img.current + 1 < img.numframes) {
+                    img.current++
+                }
+                else {
+                    img.current = 0;
+                }
+            }            
+            return $(img.src + img.current);
+        }
+        function init() {
+            ctx = $('divcanvas').getContext('2d');
+            /*
+            lander = document.getElementById( 'divlander' );
+            landerHeight = parseInt( lander.height );
+            landerWidth = parseInt( lander.width );
+            */
+            fuel=levels[currentlevel].fuel;
+            gravity = levels[currentlevel].gravity
+            alert(getURLParam("o"));
+            doAnimation();    // start the game
+        }
+        function getURLParam(strParamName) {
+            var strReturn = "";
+            var strHref = window.location.href;
+            if (strHref.indexOf("?") > -1) {
+                var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                var aQueryString = strQueryString.split("&");
+                for (var iParam = 0; iParam < aQueryString.length; iParam++) {
+                    if (aQueryString[iParam].indexOf(strParamName + "=") > -1) {
+                        var aParam = aQueryString[iParam].split("=");
+                        strReturn = aParam[1];
+                        break;
+                    }
+                }
+            }
+            return strReturn;
+        }
+        function move() {
+            if (ghost.xPos < ghost.tox)            
+                ghost.xPos++;
+            if (ghost.xPos > ghost.tox)
+                ghost.xPos--;
+            if (ghost.yPos < ghost.toy)
+                ghost.yPos++;
+            if (ghost.yPos > ghost.toy)
+                ghost.yPos--;
+            if (ghost.yPos == ghost.toy && ghost.xPos == ghost.tox) {
+                alert(ghost.tox + "-" + ghost.toy)
+                ghost.toy = Math.ceil(Math.random() * 250);
+                ghost.tox = Math.ceil(Math.random() * 250);
+            }
+        }
+
+        function rayo(ctx) {
+            var r1xold, r1yold;
+            
+            r1xold = ghost.xPos + (ghost.w / 2);
+            //r1yold=canvash/2
+            r1yold = ghost.yPos + (ghost.h / 2);
+            //r2yold=0;
+
+            var pasoy = Math.round(canvash / 20);
+            var pasox = 10;
+            ctx.beginPath();
+            ctx.moveTo(r1xold, r1yold);
+            for (i = 0; i < 19; i++) {
+                var xrandom = Math.round(pasox * Math.random());
+                
+                var newx = r1xold + xrandom;
+                if (r1xold + xrandom > ghost.xPos)
+                    newx = r1xold - xrandom
+
+                ctx.lineTo(newx, r1yold + pasoy);
+                //ctx.arcTo(r1xold,r1yold,newx,r1yold+pasoy,10);
+                //$("txt2").innerHTML=(newx+"*"+(r1yold+yrandom))
+
+                r1xold = newx;
+                r1yold = r1yold + pasoy
+
+            }
+
+            ctx.lineTo(canvasw, canvash);
+            //ctx.endPath();
+            ctx.stroke();
+
+        }
+
+        function doAnimation() {
+            if (gamestatus == 0) {
+                move();
+                ctx.clearRect(0, 0, canvasw, canvash);
+                ctx.drawImage(getanim(1), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+            }
+            else if (gamestatus == 1) {
+                ghost.dy += gravity;
+                ghost.xPos += ghost.dx;
+                ghost.yPos += ghost.dy;
+                ctx.lineWidth = 3;
+                ctx.clearRect(0, 0, canvasw, canvash);
+
+                ctx.drawImage($("divtrap"), trap.xPos, trap.yPos, trap.w, trap.h);
+                ctx.drawImage($("divfondo"), 0, 0, canvasw, canvash);
+                ctx.drawImage(getanim(0), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                ctx.drawImage(getanim(2), ghost.xPos, ghost.yPos, 40, 40);
+                var fueltpc = (fuel * 294) / levels[currentlevel].fuel
+                ctx.fillStyle = "#ffcc00";
+                ctx.fillRect(0, 0, 300, 20);
+                ctx.fillStyle = "#ff9933";
+                ctx.fillRect(2, 2, fueltpc, 16);
+                ctx.strokeStyle = "#ff9933";
+                rayo(ctx);
+                ctx.strokeStyle = "#ffffff";
+                rayo(ctx);
+                ctx.strokeStyle = "#ffcc00";
+                rayo(ctx);
+
+                if (ghost.yPos + ghost.h < trap.yPos + trap.h - levels[currentlevel].rangey) {
+                    window.setTimeout(doAnimation, 50);
+
+                } else {
+                    if (ghost.xPos + ghost.w >= trap.xPos && ghost.xPos <= trap.xPos + trap.w && Math.abs(ghost.dx) < .75 && ghost.dy < 2) {
+                        gamestatus = 2;
+                    } else {
+                        gamestatus = 3;
+                    }
+                }
+            }
+        }
+        
+        
+        function processKeypress( e ) {
+            var keyCode = e.keyCode || e.which;
+            
+            var ch = String.fromCharCode( keyCode );
+            if( ch == 'a' || ch == 'd' || ch == 'w' ) {
+                // Only use fuel when pressing a, d, or w
+                if( fuel > 0 ) fuel--;
+                
+                
+                if( fuel > 0 ) {
+                    if( ch == 'a' ) ghost.dx -= .2;
+                    if (ch == 'd') ghost.dx += .2;
+                    if (ch == 'w') ghost.dy -= .31;
+                } else {
+                    //fuelDiv.innerHTML += " <b style='color:white'>OUT OF ENERGY!!!</b>";
+                }
+            }
+        }
+        function onkey(ch) {
+            if (fuel > 0) fuel--;           
+            if (fuel > 0) {
+                if (ch == 'l' && ghost.xPos > 3) ghost.dx -= .2;
+                if (ch == 'r' && ghost.xPos < canvasw) ghost.dx += .2;
+                if (ch == 'u' && ghost.yPos>3) ghost.dy -= .31;
+                
+                
+            } else {
+                //fuelDiv.innerHTML += " <b style='color:white'>OUT OF ENERGY!!!</b>";
+            }
+            timerkey = setTimeout(function() { onkey(ch) }, 150);
+        }
+    </script>
+</head>
+
+<body onload="init();">
+    
+    
+    
+    <!-- Note: Height and Width must be set on image, so they can be read by the JavaScript -->
+    <div style="display:none">
+    <img id="aghost0" src="ghosta0.png">
+    <img id="aghost1" src="ghosta1.png">
+    <img id="aghosta0" src="ghosta0.png">
+    <img id="aghosta1" src="ghosta1.png">    
+    <img id="ef0" src="ef0.png" />
+    <img id="ef1" src="ef1.png" />
+    <img id="ef2" src="ef2.png" />
+    
+    <img id="divtrap" src="trap1.png" />
+    <img id="divfondo" src="f1.jpg" />
+    </div>
+    <!--<img src="Serenity2.jpg">-->
+    
+    
+    <canvas id="divcanvas" style="border:1px solid red" width="300" height="350">ddd</canvas>    
+        
+    <div id="keys">
+    <table>
+        <tr>
+            <td width="33%">
+            <img id="bl" name="bl"  src="bl.png" />
+            </td>
+            <td width="33%">
+            <img id="bd" name="bd" src="bd.png" />
+            </td>
+            <td width="33%">
+            <img id="br" name="br"  src="br.png" />
+            </td>
+            
+        </tr>
+    </table>
+    </div>
+    <!-- For debugging output -->
+    <div id="debugOutput">
+        <div id="xPos"></div>
+        <div id="yPos"></div>
+        <div id="dx"></div>
+        <div id="dy"></div>
+    </div>
+    <script>
+        if (typeof (document.body.ontouchstart) == "undefined") {
+            document.getElementById("bl").onmousedown = function() {
+            
+                onkey("l"); return false;
+
+            };
+            document.getElementById("bd").onmousedown = function() {
+            onkey("u"); return false;
+            };
+            document.getElementById("br").onmousedown = function() {
+            onkey("r"); return false;
+            };
+            document.getElementById("bl").onmouseup = function() {
+            window.clearInterval(timerkey)
+            };
+            document.getElementById("bd").onmouseup = function() {
+            window.clearInterval(timerkey)
+            };
+            document.getElementById("br").onmouseup = function() {
+            window.clearInterval(timerkey)
+            
+            };            
+        } else {
+            document.getElementById("bl").ontouchstart = function() {
+                onkey("l");
+                return false;
+            };
+            document.getElementById("bd").ontouchstart = function() {
+            onkey("u"); return false;
+            };
+            document.getElementById("br").ontouchstart = function() {
+            onkey("r"); return false;
+            };
+            document.getElementById("bl").ontouchend = function() {
+            window.clearInterval(timerkey); return false;
+            };
+            document.getElementById("bd").ontouchend = function() {
+            window.clearInterval(timerkey); return false;
+            };
+            document.getElementById("br").ontouchend = function() {
+            window.clearInterval(timerkey); return false;
+            };                        
+    }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,534 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml" manifest="/m?manifest=1"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Android and Iphone Web Apps</title>
+
+    
+    <style>
+        #fuel { position: absolute; top: 25; left: 10; border: 1px solid black; }                        
+        /* Debugging output */
+        
+    </style>
+    
+    <script>
+        var ctx;
+        var canvasw = 300;
+        var canvash = 350;
+        var mouse = { x: 0, y: 0 }
+        var ghost = { xPos: 150, yPos: 4,dx: 0,dy: 0, w: 45, h: 55,tox:150, toy:4, movesteps:20, moveincx:0, moveincy:0}
+        var trap = { xPos: 100, yPos: 250, w: 150, h: 100, despx: 1 }
+        var pajaro = { xPos: 150, yPos: 4, dx: 0, dy: 0, w: 60, h: 60, tox: 150, toy: 4, movesteps: 20, moveincx: 0, moveincy: 0 }
+        
+        var breaklockx = 0;
+        var breaklockdesp = 3;
+        var gamestatus = 0 //0 libre,1 capturado,2 pregana,3 prepierde, 5 capturado(colocar los munecos),6 gana,7 pierde,8 break lock
+        var fuel = 200;
+        var gravity = .0005;
+        var lander = null;
+        var landerHeight = 0;
+        var landerWidth = 0;
+        var timerkey = null;
+        var speedgamestatus1 = 0;
+        var anims = new Array(2);
+        var cont = 0;
+        anims[cont++] = { src: 'aghost', numframes: 2, cont: 0, max: 4, current: 0 }
+        anims[cont++] = { src: 'aghosta', numframes: 2, cont: 0, max: 4, current: 0 }
+        anims[cont++] = { src: 'aplayer', numframes: 2, cont: 0, max: 4, current: 0 }
+        
+        var levels = new Array(2);
+        cont = 0;
+        levels[cont++] = { txt: 'Paris', gravity: .001, rangey: 50, fuel: 200, trapmov: 1,gravinc:.04 };        
+        //max
+        //levels[cont++] = { txt: 'Paris', gravity: .03, rangey: 10, fuel: 100, trapmov: 1, gravinc: 1.2 };
+        
+        var pajaros = new Array(1)
+        cont = 0;
+        pajaros[cont++] = { xPos: 150, yPos: 150, dx: 0, dy: 0, w: 60, h: 60, tox: 150, toy: 4, movesteps: 20, moveincx: 0, moveincy: 0 }
+        var currentlevel=0;        
+        function $(id) {
+            return document.getElementById(id);
+        }
+        function getanim(idx) {
+        
+            var img = anims[idx];
+            
+            if (img.cont++ > img.max) {
+                img.cont = 0;
+                if (img.current + 1 < img.numframes) {
+                    img.current++
+                }
+                else {
+                    img.current = 0;
+                }
+            }            
+            return $(img.src + img.current);
+        }
+        function init() {
+            ctx = $('divcanvas').getContext('2d');
+            gamestatus = 0
+            /*
+            lander = document.getElementById( 'divlander' );
+            landerHeight = parseInt( lander.height );
+            landerWidth = parseInt( lander.width );
+            */
+            //maximo 30 niveles
+
+
+
+
+            //currentlevel = getURLParam("l")
+            currentlevel = 40;
+            speedgamestatus1 = currentlevel * 2.5
+            currentlevel = 0;
+            fuel = levels[currentlevel].fuel;
+            gravity = levels[currentlevel].gravity
+            
+            //alert(getURLParam("o"));
+            doAnimation();    // start the game
+        }
+        function getURLParam(strParamName) {
+            var strReturn = "";
+            var strHref = window.location.href;
+            if (strHref.indexOf("?") > -1) {
+                var strQueryString = strHref.substr(strHref.indexOf("?")).toLowerCase();
+                var aQueryString = strQueryString.split("&");
+                for (var iParam = 0; iParam < aQueryString.length; iParam++) {
+                    if (aQueryString[iParam].indexOf(strParamName + "=") > -1) {
+                        var aParam = aQueryString[iParam].split("=");
+                        strReturn = aParam[1];
+                        break;
+                    }
+                }
+            }
+            return strReturn;
+        }
+        function movepajaro(idx) {
+            if (pajaros[idx].movesteps >= 0) {
+                pajaros[idx].xPos = pajaros[idx].xPos + pajaros[idx].moveincx;
+                pajaros[idx].yPos = pajaros[idx].yPos + pajaros[idx].moveincy;
+                pajaros[idx].movesteps--;
+            }
+            else {
+                //alert(ghost.tox + "x-x" + ghost.toy)
+                pajaros[idx].movesteps = 50;
+                pajaros[idx].toy = Math.ceil(Math.random() * 300);
+                pajaros[idx].tox = Math.ceil(Math.random() * 280);
+                var disty = pajaros[idx].toy - pajaros[idx].yPos;
+                var distx = pajaros[idx].tox - pajaros[idx].xPos;
+                var dist = Math.abs(distx) + Math.abs(disty)
+                /*
+                if (dist < 200)
+                    pajaros[idx].movesteps = 200
+                if (dist < 150)
+                    pajaros[idx].movesteps = 100
+                if (dist < 100)
+                    pajaros[idx].movesteps = 50
+                if (dist < 50)
+                    pajaros[idx].movesteps = 20
+                    */
+                pajaros[idx].movesteps=dist/6 //(minimo 2)
+                pajaros[idx].moveincx = parseInt(distx / pajaros[idx].movesteps)
+                pajaros[idx].moveincy = parseInt(disty / pajaros[idx].movesteps)
+            }
+        }
+        
+        function move() {
+            if (ghost.movesteps >= 0) {
+                ghost.xPos = ghost.xPos + ghost.moveincx;
+                ghost.yPos = ghost.yPos + ghost.moveincy;
+                ghost.movesteps--;
+            }
+            else{
+                //alert(ghost.tox + "x-x" + ghost.toy)
+                ghost.movesteps = 15;
+                ghost.toy = Math.ceil(Math.random() * 250);
+                ghost.tox = Math.ceil(Math.random() * 250);
+                var disty = ghost.toy - ghost.yPos;
+                var distx = ghost.tox - ghost.xPos;                
+                var dist=Math.abs(distx) + Math.abs(disty)
+                if (dist < 200)
+                    ghost.movesteps = 15
+                if (dist < 150)
+                    ghost.movesteps = 10
+                if (dist < 100)
+                    ghost.movesteps = 5
+                if (dist < 50)
+                    ghost.movesteps = 3                    
+                ghost.moveincx = parseInt( distx / ghost.movesteps)
+                ghost.moveincy = parseInt( disty / ghost.movesteps)
+            }
+        }
+        function move2() {
+            if (ghost.movesteps >= 0) {
+                ghost.xPos = ghost.xPos + ghost.moveincx;
+                ghost.yPos = ghost.yPos + ghost.moveincy;
+                ghost.movesteps--;
+            }
+            else {
+                gamestatus=1;
+            }
+        }
+        function resetmove2(){
+                ghost.movesteps = 35;
+                ghost.toy = 20;
+                ghost.tox = canvasw-ghost.w-20;
+                var disty = ghost.toy - ghost.yPos;
+                var distx = ghost.tox - ghost.xPos;
+
+                ghost.moveincx = parseInt(distx / ghost.movesteps)
+                ghost.moveincy = parseInt(disty / ghost.movesteps)
+        
+        }        
+        function rayo2(ctx) {
+            var r1xold, r1yold;
+
+            r1xold = mouse.x;
+            //r1yold=canvash/2
+            r1yold = mouse.y;
+            //r2yold=0;
+
+            var pasoy = Math.round((canvash - mouse.y-ghost.h-3) / 20);
+            var pasox = 20
+            ctx.beginPath();
+            ctx.moveTo(r1xold, r1yold);
+            for (i = 0; i < 18; i++) {
+                var xrandom = Math.round(pasox * Math.random());
+
+                var newx = r1xold + xrandom;
+                if (r1xold + xrandom >mouse.x)
+                    newx = r1xold - xrandom
+                ctx.lineTo(newx, r1yold + pasoy);
+                //ctx.arcTo(r1xold,r1yold,newx,r1yold+pasoy,10);
+                //$("txt2").innerHTML=(newx+"*"+(r1yold+yrandom))
+
+                r1xold = newx;
+                r1yold = r1yold + pasoy
+
+            }
+
+            ctx.lineTo(canvasw/2, canvash - ghost.h - 3);
+            //ctx.endPath();
+            ctx.stroke();
+        }
+        function rayo(ctx) {
+            var r1xold, r1yold;
+            
+            r1xold = ghost.xPos + (ghost.w / 2);
+            //r1yold=canvash/2
+            r1yold = ghost.yPos + (ghost.h / 2);
+            //r2yold=0;
+
+            var pasoy = Math.round(Math.abs((ghost.yPos-(canvash - ghost.h - 3))) / 20);
+            
+            var pasox = 10;
+            ctx.beginPath();
+            ctx.moveTo(r1xold, r1yold);
+            for (i = 0; i < 18; i++) {
+                var xrandom = Math.round(pasox * Math.random());
+                
+                var newx = r1xold + xrandom;
+                if (r1xold + xrandom > ghost.xPos)
+                    newx = r1xold - xrandom
+
+                ctx.lineTo(newx, r1yold + pasoy);
+                //ctx.arcTo(r1xold,r1yold,newx,r1yold+pasoy,10);
+                //$("txt2").innerHTML=(newx+"*"+(r1yold+yrandom))
+
+                r1xold = newx;
+                r1yold = r1yold + pasoy
+
+            }
+
+            //ctx.lineTo(canvasw, canvash - ghost.h - 3);
+            //ctx.endPath();
+            ctx.stroke();
+
+        }
+        function testclick() {
+            if (mouse.x < ghost.xPos + ghost.w && mouse.x > ghost.xPos){
+                if (mouse.y < ghost.yPos + ghost.h && mouse.y > ghost.yPos){
+                    gamestatus = 5;
+                    resetmove2();            
+                }
+            }
+            mouse.x = -666;
+            mouse.y = -666;
+
+        }
+        function rayos() {
+            ctx.strokeStyle = "#ff9933";
+            rayo(ctx);
+            ctx.strokeStyle = "#ffffff";
+            rayo(ctx);
+            ctx.strokeStyle = "#ffcc00";
+            rayo(ctx);
+        }
+        function rayos2() {
+            ctx.strokeStyle = "#ff9933";
+            rayo2(ctx);
+            ctx.strokeStyle = "#ffffff";
+            rayo2(ctx);
+            ctx.strokeStyle = "#ffcc00";
+            rayo2(ctx);
+        }
+        
+        function doAnimation() {
+            ctx.clearRect(0, 0, canvasw, canvash);
+            ctx.drawImage($("divfondo"), 0, 0, canvasw, canvash);
+            var fueltpc = (fuel * 294) / levels[currentlevel].fuel
+            ctx.fillStyle = "#ffcc00";
+            ctx.fillRect(0, 0, 300, 20);
+            ctx.fillStyle = "#ff9933";
+            ctx.fillRect(2, 2, fueltpc, 16);            
+            ctx.lineWidth = 3;
+            if (gamestatus == 0) {            
+                move();
+                ctx.drawImage(getanim(0), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                ctx.drawImage(getanim(2), (canvasw/2) - (ghost.w / 2), canvash - ghost.h - 3, ghost.w, ghost.h);
+                //window.setTimeout(doAnimation, 50);
+                window.setTimeout(doAnimation, 100 - speedgamestatus1);
+                testclick();
+            }
+            else if (gamestatus == 1) {
+                
+                ghost.dy += gravity;
+                ghost.xPos += ghost.dx;
+                ghost.yPos += ghost.dy;
+                if (levels[currentlevel].trapmov != 0) {
+                    
+                    trap.xPos = trap.xPos + trap.despx
+                    if (trap.xPos+(trap.w/2) < 5) trap.despx = 1;
+                    if (trap.xPos + (trap.w / 2) > canvasw - 5) trap.despx = -1;
+                }
+                movepajaro(0);
+                ctx.drawImage($("divtrap"), trap.xPos, trap.yPos, trap.w, trap.h);
+                ctx.drawImage($("pajaro0"), pajaros[0].xPos, pajaros[0].yPos, pajaros[0].w, pajaros[0].h);
+
+                ctx.drawImage(getanim(1), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                ctx.drawImage(getanim(2), ghost.xPos-(ghost.w/2), canvash-ghost.h-3, ghost.w, ghost.h);
+                //ctx.drawImage(getanim(2), ghost.xPos, ghost.yPos, 40, 40);
+                rayos()
+
+                if (ghost.yPos + ghost.h < trap.yPos + trap.h - levels[currentlevel].rangey) {
+                    window.setTimeout(doAnimation, 50);
+
+                } else {
+                    if (ghost.xPos + ghost.w >= trap.xPos && ghost.xPos <= trap.xPos + trap.w && Math.abs(ghost.dx) < .75 && ghost.dy < 2) {
+                        
+                        gamestatus = 2;
+                    } else if (ghost.yPos + ghost.h < trap.yPos + trap.h -10) {
+                        gamestatus = 3;
+                    }
+                }
+            }
+            if (gamestatus == 2) {
+                if (ghost.xPos > (trap.xPos+trap.w/2)) ghost.xPos--
+                if (ghost.xPos < (trap.xPos + trap.w / 2)) ghost.xPos++                
+                if (ghost.w > 8) ghost.w = ghost.w-0.25
+                if (ghost.h > 8) ghost.h = ghost.h - 0.25
+                if (ghost.yPos < canvash - 5) {
+                    ghost.yPos++
+                }
+                else {
+                    gamestatus = 6;
+                }
+
+                ctx.drawImage(getanim(1), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                
+                window.setTimeout(doAnimation, 50);
+            }
+            if (gamestatus == 3) {
+                if (ghost.yPos > -30) {
+                    ghost.yPos = ghost.yPos - 3;
+                }
+                else {
+                    gamestatus = 7;
+                }
+                ctx.drawImage(getanim(1), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                window.setTimeout(doAnimation, 50);
+            }            
+            if (gamestatus == 5) {
+                move2();
+                ctx.drawImage(getanim(1), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                ctx.drawImage(getanim(2), ghost.xPos - (ghost.w / 2), canvash - ghost.h - 3, ghost.w, ghost.h);
+                window.setTimeout(doAnimation, 50);
+                rayos();
+
+            }
+            if (gamestatus == 8) {
+                ctx.fillStyle = "#000000";
+                var with2 = 290;
+                ctx.fillRect(0, 0, 300, 20);
+                ctx.fillStyle = "#ff0000";
+                var margenerror = 20;
+                var margen1, margen2
+                margen1 = (with2 / 2) - (margenerror / 2)
+                margen2 = (with2 / 2) + (margenerror / 2)
+                ctx.fillRect(5, 2, margen1, 16);
+                ctx.fillStyle = "#00ff00";
+                ctx.fillRect(margen1, 2, margenerror, 16);
+                ctx.fillStyle = "#ff0000";
+                ctx.fillRect(margen2, 2, with2 - margen2, 16);
+                if (breaklockx < 4) breaklockdesp = 10;
+                if (breaklockx > 285) breaklockdesp = -10;
+                breaklockx = breaklockx + breaklockdesp
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(breaklockx, 2, 10, 10);                
+                window.setTimeout(doAnimation, 100);
+            }
+        }
+        
+        
+        function processKeypress( e ) {
+            var keyCode = e.keyCode || e.which;
+            
+            var ch = String.fromCharCode( keyCode );
+            if( ch == 'a' || ch == 'd' || ch == 'w' ) {
+                // Only use fuel when pressing a, d, or w
+                if( fuel > 0 ) fuel--;
+                
+                
+                if( fuel > 0 ) {
+                    if( ch == 'a' ) ghost.dx -= .2;
+                    if (ch == 'd') ghost.dx += .2;
+                    if (ch == 'w') ghost.dy -= levels[currentlevel].gravinc;
+                } else {
+                    //fuelDiv.innerHTML += " <b style='color:white'>OUT OF ENERGY!!!</b>";
+                }
+            }
+        }
+        function onkey(ch) {
+            if (gamestatus == 1) {
+                if (fuel > 0) fuel--;
+                if (fuel > 0) {
+                    if (ch == 'l' && ghost.xPos > 3) ghost.dx -= .2;
+                    if (ch == 'r' && ghost.xPos < canvasw) ghost.dx += .2;
+                    if (ch == 'u' && ghost.yPos > 3) ghost.dy -= levels[currentlevel].gravinc;
+
+
+                } else {
+                    //fuelDiv.innerHTML += " <b style='color:white'>OUT OF ENERGY!!!</b>";
+                }
+                timerkey = setTimeout(function() { onkey(ch) }, 150);
+            }
+            if (gamestatus == 8) {
+                breaklockdesp = 0;
+            }
+        }
+    </script>
+</head>
+
+<body onload="init();">
+    
+    
+    
+    <!-- Note: Height and Width must be set on image, so they can be read by the JavaScript -->
+    <div style="display:none">
+    <img id="aghost0" src="ghost0.png">
+    <img id="aghost1" src="ghost1.png">
+    <img id="aghosta0" src="ghosta0.png">
+    <img id="aghosta1" src="ghosta1.png">    
+    <img id="pajaro0" src="mirilla.png" />
+    <img id="aplayer0" src="player0.png" />
+    <img id="aplayer1" src="player1.png" />
+    <img id="ef2" src="ef2.png" />
+    
+    <img id="divtrap" src="trap1.png" />
+    <img id="divfondo" src="f1.jpg" />
+    </div>
+    <!--<img src="Serenity2.jpg">-->
+    
+    
+    <canvas id="divcanvas" style="border:1px solid red" width="300" height="350">ddd</canvas>    
+        
+    <div id="keys">
+    <table>
+        <tr>
+            <td width="33%">
+            <img id="bl" name="bl"  src="bl.png" />
+            </td>
+            <td width="33%">
+            <img id="bd" name="bd" src="bd.png" />
+            </td>
+            <td width="33%">
+            <img id="br" name="br"  src="br.png" />
+            </td>
+            
+        </tr>
+    </table>
+    </div>
+    <!-- For debugging output -->
+    <div id="debugOutput">
+      xxx
+    </div>
+    <script>
+        if (typeof (document.body.ontouchstart) == "undefined") {
+            document.getElementById("divcanvas").onmousedown = function(e) {
+                if (gamestatus == 0) {
+                    mouse.x = e.pageX;
+                    mouse.y = e.pageY;
+                    rayos2();
+                    fuel = fuel - 5;
+                }
+            }
+        
+            document.getElementById("bl").onmousedown = function() {
+            
+                onkey("l"); return false;
+
+            };
+            document.getElementById("bd").onmousedown = function() {
+            onkey("u"); return false;
+            };
+            document.getElementById("br").onmousedown = function() {
+            onkey("r"); return false;
+            };
+            document.getElementById("bl").onmouseup = function() {
+            window.clearInterval(timerkey)
+            };
+            document.getElementById("bd").onmouseup = function() {
+            window.clearInterval(timerkey)
+            };
+            document.getElementById("br").onmouseup = function() {
+            window.clearInterval(timerkey)
+            
+            };
+        } else {
+            document.getElementById("divcanvas").ontouchstart = function(event) {
+                mouse.x = event.touches[0].pageX;
+                mouse.y = event.touches[0].pageY;
+                document.getElementById("debugOutput").innerHTML = mouse.x;
+                if (gamestatus == 0) {
+                    rayos2();
+                    fuel = fuel - 5
+                }
+            }
+            document.getElementById("divcanvas").ontouchmove = function(event) {
+                event.preventDefault();
+                mouse.x = event.touches[0].pageX;
+                mouse.y = event.touches[0].pageY;
+                document.getElementById("debugOutput").innerHTML = mouse.x;
+            }
+            document.getElementById("bl").ontouchstart = function() {
+                onkey("l");
+                return false;
+            };
+            document.getElementById("bd").ontouchstart = function() {
+            onkey("u"); return false;
+            };
+            document.getElementById("br").ontouchstart = function() {
+            onkey("r"); return false;
+            };
+            document.getElementById("bl").ontouchend = function() {
+            window.clearInterval(timerkey); return false;
+            };
+            document.getElementById("bd").ontouchend = function() {
+            window.clearInterval(timerkey); return false;
+            };
+            document.getElementById("br").ontouchend = function() {
+            window.clearInterval(timerkey); return false;
+            };                        
+    }
+    </script>
+</body>
+</html>
+
