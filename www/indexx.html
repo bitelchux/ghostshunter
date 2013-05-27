@@ -7,6 +7,12 @@
     <script src="phonegap.js" type="text/javascript"></script>
     <script src="funcspre.js" type="text/javascript"></script>
     <style>
+*{
+-moz-user-select: none; 
+        -khtml-user-select: none; 
+        -webkit-user-select: none; 
+        -o-user-select: none; 
+}
         body, p, td, font, div, span
         {
             color: White;
@@ -14,7 +20,7 @@
             font-weight: bold;
             font-size: 12px;
         }
-        body
+        body,html
         {
             background-color: black;
         }
@@ -102,6 +108,9 @@
         <img class='menuimg' src='logoimg.png' />
         <br />
         <img class='menuimg' src='start.png'>
+<br/><br/>
+        <img class="menuimg" src="back.png" onclick="btback()" />
+
     </div>
     <div id="divgameplay" style="display: none;">
     </div>
@@ -110,12 +119,17 @@
         <img class="menuimg" src="logoimg.png" /><br />
         <img class="menuimg" src="gameover.png" /><br />
         <img class="menuimg" src="tryagain.png" onclick="btgameover();" />
+<br/><br/>
+        <img class="menuimg" src="back.png" onclick="btback()" />
+
     </div>
     <div id="divgamefinished" class="bigDiv" style="display: none">
         <img class="menuimg" src="logo.png" /><br />
         <img class="menuimg" src="logoimg.png" /><br />
         <img class="menuimg" src="gamefinished.png" /><br />
-        <img class="menuimg" src="tryagain.png" onclick="bttryagain();" />
+<br/><br/>
+        <img class="menuimg" src="back.png" onclick="btback()" />
+
     </div>
     <div id="divnextlevel" class="bigDiv" style="display: none">
         <img class="menuimg" src="logo.png" /><br />
@@ -126,6 +140,10 @@
         <img id="stars2" style="display: none" src="stars2.png" />
         <img id="stars3" style="display: none" src="stars3.png" />
         <img class="menuimg" src="ok.png" onclick="gotonext()" />
+
+<br/><br/>
+        <img class="menuimg" src="back.png" onclick="btback()" />
+
     </div>
     <div id="tickerBg" style="position: absolute; height: 40px; display: none; z-index: 6">
         &nbsp;

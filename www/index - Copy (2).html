@@ -135,7 +135,7 @@ function decodeStr(coded) {
             cont = 0;
             //speed desde 0.5 hasta 3
             //numpajaros maximo 4
-            levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f1.jpg', txt: 'La Alhambra de Granada', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.5 };
+            levels[cont++] = { tipoghost: 0, numpajaros: 5, bg: 'f1.jpg', txt: 'La Alhambra de Granada', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2 };
             levels[cont++] = { tipoghost: 1, numpajaros: 1, bg: 'f2.jpg', txt: 'Angkor', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.6 };
             levels[cont++] = { tipoghost: 0, numpajaros: 2, bg: 'f3.jpg', txt: 'Angkor', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.7 };
             levels[cont++] = { tipoghost: 1, numpajaros: 2, bg: 'f4.jpg', txt: 'Neuschwanstein Castle', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.8 };
@@ -183,7 +183,6 @@ function decodeStr(coded) {
           var misfases = listCookies();
           if (misfases.length==0) return "";
           misfases.sort();
-          misfases.reverse();
           var salida = "<ul style='width:310px;margin:4px;padding:4px'>";
           for (i = 0; i < misfases.length; i++) {
               //nombre de la fase|pos en el array de fases|estrellas
@@ -259,14 +258,12 @@ function decodeStr(coded) {
     <div  id="divloading" class="bigDiv" style="display:none">
         <img class="menuimg" src="logo.png" /><br />
         <img class="menuimg" src="logoimg.png" /><br />
-        <img  src="loading.gif" />
+        <img class="menuimg" src="loading.gif" />
     </div>    
     <div id="divmenu"  class="bigDiv" style="display:none">
         <img class="menuimg" src="logo.png" /><br />
         <img class="menuimg" src="logoimg.png" /><br />
         <img class="menuimg" src="start.png"  onclick="btstart();this.blur()"/><br />
-      <br/>
-      
         <img class="menuimg" style="display:none" id="btcontinue" src="continue.png"  onclick="$('#divcontinue').fadeIn();$('#divmenu').fadeOut();this.blur()"/>
         
       <br />
@@ -274,8 +271,8 @@ function decodeStr(coded) {
         <script>
 
             var out = getGlobalSituation();
-            
-            if (out != "" ) {
+            //alert(out)
+            if (out != "" || 1 == 1) {
                 $("#btcontinue").show();
             }
         </script>
@@ -599,7 +596,7 @@ function decodeStr(coded) {
        anims[cont++] = { src: 'aghosta', numframes: 1, cont: 0, max: 4, current: 0, numrepes: 0 }
        anims[cont++] = { src: 'aplayer', numframes: 1, cont: 0, max: 4, current: 0, numrepes: 0 }
        anims[cont++] = { src: 'bola', numframes: 4, cont: 0, max: 2, current: 0, numrepes: 0 }
-       anims[cont++] = { src: 'explo', numframes: 1, cont: 0, max: 2, current: 0, numrepes: 1 }
+       anims[cont++] = { src: 'explo', numframes: 6, cont: 0, max: 2, current: 0, numrepes: 1 }
        anims[cont++] = { src: 'donde', numframes: 2, cont: 0, max: 2, current: 0, numrepes: 0 }
        anims[cont++] = { src: 'pajaro', numframes: 2, cont: 0, max: 2, current: 0, numrepes: 0 }
        anims[cont++] = { src: 'trapon', numframes: 1, cont: 0, max: 1, current: 0, numrepes: 0 }
@@ -633,19 +630,29 @@ function decodeStr(coded) {
        var aghosta0 = new Image();
        var aghosta1 = new Image();
        var pajaro0 = new Image();
-
+       var pajaro1 = new Image();
+       var pajaro2 = new Image();
+       var pajaro3 = new Image();
+       var pajaro4 = new Image();
+       var pajaro5 = new Image();
        var aplayer0 = new Image();
-
+       var aplayer1 = new Image();
        var aplayerfin = new Image();
        var ef2 = new Image();
 
        var bola0 = new Image();
- 
+       var bola1 = new Image();
+       var bola2 = new Image();
+       var bola3 = new Image();
+       var bola4 = new Image();
        var explo0 = new Image();
-
+       var explo1 = new Image();
+       var explo2 = new Image();
+       var explo3 = new Image();
+       var explo4 = new Image();
        var trapoff = new Image();
        var trapon0 = new Image();
-
+       var trapon1 = new Image();
 
 
        function xxx(id) {
@@ -832,7 +839,7 @@ function decodeStr(coded) {
                        pajaros[idx].toy = Math.max(0, aux);
                    }
                    if (r == 2) {
-                       var aux = Math.min(pajaros[idx].xPos + (rsigno * rw), realw-gosw)
+                       var aux = Math.min(pajaros[idx].xPos + (rsigno * rw), realw)
                        pajaros[idx].tox = Math.max(0, aux);
                    }
                    var disty = pajaros[idx].toy - pajaros[idx].yPos;
@@ -1014,8 +1021,7 @@ function decodeStr(coded) {
                  }
                  function resetmove2() {
                  ghost.movesteps = 35;
-                 ghost.toy = 0;
-                 
+                 ghost.toy = 20;
                  ghost.tox = realw - gosw;
                  var disty = ghost.toy - ghost.yPos;
                  var distx = ghost.tox - ghost.xPos;
@@ -1027,28 +1033,28 @@ function decodeStr(coded) {
                  var linew, rayosaux1, rayosaux2;
                  function rayo2(ctx) {
 
-                     if (mouse.x < realw && mouse.y < realh) {
-                         var r1xold, r1yold;
-                         var desp1 = Math.round(30 * Math.random())
-                         var desp2 = Math.round(5 * Math.random())
-                         r1xold = mouse.x;
-                         //r1yold=realh/2
-                         r1yold = mouse.y - 15 + desp1;
-                         //r2yold=0;                       
-                         ctx.beginPath();
-                         ctx.moveTo(r1xold, r1yold);
-                         if (linew == undefined) {
-                             linew = 13 * ratiow;
-                             rayosaux1 = realw / 2;
-                             rayosaux2 = realh - gosh - 3;
-                         }
-                         ctx.lineTo(rayosaux1 + desp2, rayosaux2);
+                 if (mouse.x < realw && mouse.y < realh) {
+               var r1xold, r1yold;
+               var desp1 = Math.round(30 * Math.random())
+               var desp2 = Math.round(5 * Math.random())
+               r1xold = mouse.x;
+               //r1yold=realh/2
+               r1yold = mouse.y - 15 + desp1;
+               //r2yold=0;                       
+               ctx.beginPath();
+               ctx.moveTo(r1xold, r1yold);
+               if (linew == undefined) {
+                   linew = 5 * ratiow;
+                   rayosaux1 = realw / 2;
+                   rayosaux2 = realh - gosh - 3;
+               }
+               ctx.lineTo(rayosaux1 + desp2, rayosaux2);
 
-                         ctx.lineWidth = linew;
-                         //ctx.endPath();
-                         ctx.stroke();
-                     }
-                 }
+               ctx.lineWidth = linew;
+               //ctx.endPath();
+               ctx.stroke();
+           }
+       }
        var rayoaux1, rayoaux2, rayoaux3;
        function rayo(ctx) {
            if (mouse.x < realw && mouse.y < realh) {
@@ -1171,12 +1177,10 @@ function decodeStr(coded) {
 
            ctx.strokeStyle = "#ff9933";
            rayo2(ctx);
-           /*
            ctx.strokeStyle = "#ffffff";
            rayo2(ctx);
            ctx.strokeStyle = "#ffcc00";
            rayo2(ctx);
-           */
 
        }
        function timeoutgameover() {
@@ -1197,8 +1201,10 @@ function decodeStr(coded) {
 
            $("#divnextlevel").fadeIn("slow")
            var stars = 1;
-           
-           if (fuel > 80) {
+           if (fuel > 50) {
+               stars = 1;
+           }
+           if (fuel > 100) {
                stars = 2;
            }
            if (fuel > 140) {
@@ -1306,7 +1312,7 @@ function decodeStr(coded) {
                  if (fuel > 140) {
                      xxx("divenergy").style.backgroundColor = "#EDF553";
                  }
-                 else if (fuel > 80) {
+                 else if (fuel > 100) {
                      xxx("divenergy").style.backgroundColor = "#F5D453";
                  }
                  else if (fuel > 50) {
@@ -1344,7 +1350,7 @@ function decodeStr(coded) {
                              if (currentlevel < 10) {
                                  fuel = fuel - 10
                              } else {
-                                 fuel = fuel - 7
+                                 fuel = fuel - 5
                              }
                              canvastimer = setTimeout(function () { clearCanvas() }, 500);
 
@@ -1407,9 +1413,8 @@ function decodeStr(coded) {
 
 
                          if (trap.estado == 1 && ghost.yPos + (gosh) > realh - (gosh) && ghost.xPos + gosw >= trap.xPos && ghost.xPos <= trap.xPos + trapw) {
-                           gamestatus = 2;
-                           divrayosx.style.display="none";
-                           //document.getElementById("debugOutput").innerHTML = "<h1>STAGE CLEAR!!</h1>";
+                             gamestatus = 2;
+                             //document.getElementById("debugOutput").innerHTML = "<h1>STAGE CLEAR!!</h1>";
                          }
                          //window.setTimeout(function(){doAnimation()}, clockspeed);
 
@@ -1424,9 +1429,9 @@ function decodeStr(coded) {
                          if (ghost.yPos + ghost.h < realh - 5) {
                              ghost.yPos++
                          }
-                         mydrawimage(trap.div, getanim(7), trap.xPos, realh - traph, trapw, traph);
-                         mydrawimage(ghost.div, getanim(1), trap.xPos, ghost.yPos,ghost.w, ghost.h);
-                         mydrawimage(player.div, getanim(2), trap.xPos, realh - (playerh) - 3, playerw, playerh);
+                         mydrawimage(trap.div, getanim(7), trap.xPos, realh - traph, trap.w, trap.h);
+                         mydrawimage(ghost.div, getanim(1), ghost.xPos, ghost.yPos, ghost.w, ghost.h);
+                         mydrawimage(player.div, getanim(2), ghost.xPos - (playerw), realh - (playerh) - 3, playerw, playerh);
 
 
                          if (timeraux == null)
@@ -1461,13 +1466,11 @@ function decodeStr(coded) {
                          breaklockx = breaklockx + breaklockdesp
                          ctx.fillStyle = "#ffffff";
                          ctx.fillRect(breaklockx, 2, 10, 10);
-                           
                          //window.setTimeout(doAnimation, clockspeed*2);
                      }
                      if (gamestatus == 9) {
                          //document.getElementById("debugOutput").innerHTML = "OVERLOAD!!OVERLOAD!!";
-                         var explo = getanim(4);
-                         player.div.children[0].title="";
+                         var explo = getanim(4)
                          mydrawimage(player.div, ML.sprites["aplayerfin"], ghost.xPos, realh - (playerh) - 3, gosw, gosh);
                          mydrawimage(explodiv.div, explo, ghost.xPos, realh - (playerh) - 3, gosw, gosh);
                          mydrawimage(ghost.div, explo, ghost.xPos, ghost.yPos, gosw, gosh);
@@ -1484,7 +1487,22 @@ function decodeStr(coded) {
                      $("#divmsgs").fadeIn("slow")
                      $("#divcanvas").hide()
 
-                    
+                     /*
+                     ctx.textAlign = "center";
+                     ctx.textBaseline = "middle";
+                     ctx.font = "bold 14px 'Times New Roman', Times, serif";            
+                     ctx.fillStyle = "#ffcc00";
+                     ctx.fillRect(0, 80, 300, 200);
+                
+                     ctx.fillStyle = "#000";
+                     ctx.strokeStyle = "#f00";
+                
+
+                     try {
+                     ctx.fillText(msg, 10, 90);
+                     } catch (ex) {alert(ex) }                
+
+                     */
                  }
 
              }
@@ -1708,20 +1726,16 @@ function decodeStr(coded) {
            ML.spritessrcs.push("aplayerfin|player2.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("ef|ef0.gif|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("bola0|bolarayo0.png|" + ratiow + "|" + ratioh)
-                     /*
            ML.spritessrcs.push("bola1|bolarayo1.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("bola2|bolarayo2.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("bola3|bolarayo3.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("bola4|bolarayo4.png|" + ratiow + "|" + ratioh)
-                     */
-           ML.spritessrcs.push("explo0|explo.gif|" + ratiow + "|" + ratioh)
-                     /*
+           ML.spritessrcs.push("explo0|explo0.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("explo1|explo1.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("explo2|explo2.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("explo3|explo3.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("explo4|explo4.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("explo4|blank.png|" + ratiow + "|" + ratioh)
-                     */
            ML.spritessrcs.push("trapoff0|trapoff0.png|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("trapon0|trap.gif|" + ratiow + "|" + ratioh)
            ML.spritessrcs.push("trapon1|trapon1.png|" + ratiow + "|" + ratioh)
@@ -1778,87 +1792,7 @@ function decodeStr(coded) {
        }
                 
 </script>
-  <!--
-//snippets
-ANDROID
-play background music
-JavaScriptInterface jsInterface = new JavaScriptInterface(this);
-webView.getSettings().setJavaScriptEnabled(true);
-webView.addJavascriptInterface(jsInterface, "JSInterface");
-Declare the class JavaScriptInterface:
-
-ublic class JavaScriptInterface {
-    private Activity activity;
-
-    public JavaScriptInterface(Activity activiy) {
-        this.activity = activiy;
-    }
-
-    public void startVideo(String videoAddress){
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(videoAddress), "video/3gpp"); 
-        activity.startActivity(intent);
-    }
-}
 
 
-<video width="320" height="240" controls="controls" poster='poster.gif'
-       onclick="window.JSInterface.startVideo('file:///sdcard/test.3gp');" >
-   Your browser does not support the video tag.
-</video>
-
-  
-//sonido
-mp = MediaPlayer.create(Test.this, R.raw.mysound);
-                    mp.setOnCompletionListener(new OnCompletionListener() {
-
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            // TODO Auto-generated method stub
-                            mp.release();
-                        }
-
-                    });   
-                    mp.start();
-
-
-WINDOWS PHONE
-<script>
-window.external.notify("Uulalaa!");
-</script>
-
-webBrowserControl.ScriptNotify += new EventHandler <NotifyEventArgs>(JavaScriptNotify);
-
-void JavaScriptNotify(Object sender, NotifyEventArgs notifyArgs)
-        {
-            System.Diagnostics.Debug.WriteLine("JavaScriptNotify: " + notifyArgs.Value);
-            MessageBox.Show("You clicked the button in the \"web-ui\"");
-        }
-
-//sonidos
-using Microsoft.Xna.Framework.Audio;// for SoundEffect
-
-  // Load the sound file
-            StreamResourceInfo info = Application.GetResourceStream(new Uri("Audio/sound.wav", UriKind.Relative));
-           alarm = SoundEffect.FromStream(info.Stream);
-            Microsoft.Xna.Framework.FrameworkDispatcher.Update();
-            alarm.Play();
-
-SoundEffectInstance seiCircus;
-
-using (var stream = TitleContainer.OpenStream("circus.wav"))
-{
-    var effect = SoundEffect.FromStream(stream);
-    //create the instance
-    seiCircus = effect.CreateInstance();
-
-    FrameworkDispatcher.Update();
-    //play sound via the instance
-    seiCircus.Play();
-}
-
-//some event called to stop sound
-seiCircus.Stop();
--->
 </body>
 </html>
