@@ -1473,15 +1473,15 @@ function initTouchs() {
     }
 }
 if (currentlevel != "") {
-    ML.soundssrcs.push("pium|pium2.mp3")
-    ML.soundssrcs.push("rayo|rayo.mp3|loop")
-    ML.soundssrcs.push("llorando|llorando.mp3")
-    ML.soundssrcs.push("explo|explo1.mp3")
-    ML.soundssrcs.push("absorbe|absorbe.mp3")
-    ML.soundssrcs.push("misionfinished|misionfinished.mp3")
-    ML.soundssrcs.push("button|button.mp3");    
+    ML.soundssrcs.push("pium|http://gh.delasource.info/pium2.mp3")
+    ML.soundssrcs.push("rayo|http://gh.delasource.info/rayo.mp3|loop")
+    ML.soundssrcs.push("llorando|http://gh.delasource.info/llorando.mp3")
+    ML.soundssrcs.push("explo|http://gh.delasource.info/explo1.mp3")
+    ML.soundssrcs.push("absorbe|http://gh.delasource.info/absorbe.mp3")
+    ML.soundssrcs.push("misionfinished|http://gh.delasource.info/misionfinished.mp3")
+    ML.soundssrcs.push("button|http://gh.delasource.info/button.mp3");    
 } else {
-    ML.soundssrcs.push("button|button.mp3");
+    ML.soundssrcs.push("button|http://gh.delasource.info/button.mp3");
 }
 
 
