@@ -187,42 +187,42 @@ var levels = new Array();
 cont = 0;
 //speed desde 0.5 hasta 3
 //numpajaros maximo 4
-levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f1.jpg', txt: 'Menu', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.5 };
-levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f1.jpg', txt: 'La Alhambra de Granada', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.1 };
-levels[cont++] = { tipoghost: 1, numpajaros: 1, bg: 'f2.jpg', txt: 'Angkor', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.6 };
-levels[cont++] = { tipoghost: 1, numpajaros: 2, bg: 'f4.jpg', txt: 'Neuschwanstein Castle', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.8 };
-levels[cont++] = { tipoghost: 2, numpajaros: 2, bg: 'f5.jpg', txt: 'Statues of Easter Island', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.9 };
-levels[cont++] = { tipoghost: 2, numpajaros: 2, bg: 'f6.jpg', txt: 'Stonehenge', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1 };
-levels[cont++] = { tipoghost: 1, numpajaros: 2, bg: 'f7.jpg', txt: 'The Acropolis of Athens', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.1 };
-levels[cont++] = { tipoghost: 3, numpajaros: 3, bg: 'f8.jpg', txt: 'Eiffel Tower', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.2 };
-levels[cont++] = { tipoghost: 3, numpajaros: 3, bg: 'f9.jpg', txt: 'The Kremlin Red Square', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.3 };
-levels[cont++] = { tipoghost: 1, numpajaros: 3, bg: 'f10.jpg', txt: 'The Pyramids of Giza', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.4 };
-levels[cont++] = { tipoghost: 2, numpajaros: 3, bg: 'f11.jpg', txt: 'The Statue of Liberty', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.5 };
-levels[cont++] = { tipoghost: 3, numpajaros: 3, bg: 'f12.jpg', txt: 'Timbuktu', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.6 };
-levels[cont++] = { tipoghost: 0, numpajaros: 3, bg: 'f13.jpg', txt: 'Petra Great Temple', fuel: 200, clave: 'xxx', traptipo: 0, speed: 1.7 };
-levels[cont++] = { tipoghost: 1, numpajaros: 4, bg: 'f14.jpg', txt: 'La Sagrada Familia', fuel: 200, clave: 'xxx', traptipo: 1, speed: 1.8 };
-levels[cont++] = { tipoghost: 2, numpajaros: 4, bg: 'f15.jpg', txt: 'Machu Pichu', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2 };
+levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f1.jpg', txt: 'Menu', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 0.5 };
+levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f1.jpg', txt: 'La Alhambra de Granada', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 0.6 };
+levels[cont++] = { tipoghost: 1, numpajaros: 1, bg: 'f2.jpg', txt: 'Angkor', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 0.6 };
+levels[cont++] = { tipoghost: 1, numpajaros: 2, bg: 'f4.jpg', txt: 'Neuschwanstein Castle', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 0.8 };
+levels[cont++] = { tipoghost: 2, numpajaros: 2, bg: 'f5.jpg', txt: 'Statues of Easter Island', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 0.9 };
+levels[cont++] = { tipoghost: 2, numpajaros: 2, bg: 'f6.jpg', txt: 'Stonehenge', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1 };
+levels[cont++] = { tipoghost: 1, numpajaros: 2, bg: 'f7.jpg', txt: 'The Acropolis of Athens', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.1 };
+levels[cont++] = { tipoghost: 3, numpajaros: 3, bg: 'f8.jpg', txt: 'Eiffel Tower', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.2 };
+levels[cont++] = { tipoghost: 3, numpajaros: 3, bg: 'f9.jpg', txt: 'The Kremlin Red Square', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.3 };
+levels[cont++] = { tipoghost: 1, numpajaros: 3, bg: 'f10.jpg', txt: 'The Pyramids of Giza', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.4 };
+levels[cont++] = { tipoghost: 2, numpajaros: 3, bg: 'f11.jpg', txt: 'The Statue of Liberty', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.5 };
+levels[cont++] = { tipoghost: 3, numpajaros: 3, bg: 'f12.jpg', txt: 'Timbuktu', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.6 };
+levels[cont++] = { tipoghost: 0, numpajaros: 3, bg: 'f13.jpg', txt: 'Petra Great Temple', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 1.7 };
+levels[cont++] = { tipoghost: 1, numpajaros: 4, bg: 'f14.jpg', txt: 'La Sagrada Familia', fuel: 200, julkclave: 'xxx', traptipo: 1, speed: 1.8 };
+levels[cont++] = { tipoghost: 2, numpajaros: 4, bg: 'f15.jpg', txt: 'Machu Pichu', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2 };
 
-levels[cont++] = { tipoghost: 3, numpajaros: 4, bg: 'f16.jpg', txt: 'Big Ben', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.1 };
-levels[cont++] = { tipoghost: 0, numpajaros: 4, bg: 'f17.jpg', txt: 'Pisa Tower', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.2 };
-levels[cont++] = { tipoghost: 1, numpajaros: 4, bg: 'f18.jpg', txt: 'Taj Majal', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.3 };
-levels[cont++] = { tipoghost: 2, numpajaros: 4, bg: 'f19.jpg', txt: 'Coliseo', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.4 };
-levels[cont++] = { tipoghost: 3, numpajaros: 4, bg: 'f20.jpg', txt: 'Cristo Rey', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.5 };
-levels[cont++] = { tipoghost: 0, numpajaros: 5, bg: 'f21.jpg', txt: 'Himalaya', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.6 };
-levels[cont++] = { tipoghost: 1, numpajaros: 5, bg: 'f22.jpg', txt: 'Niagara Falls', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.7 };
-levels[cont++] = { tipoghost: 2, numpajaros: 5, bg: 'f23.jpg', txt: 'Notre Dame', fuel: 200, clave: 'xxx', traptipo: 0, speed: 2.8 };
-levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f24.jpg', txt: 'Burj Khalifa (Final)', fuel: 200, clave: 'xxx', traptipo: 0, speed: 0.1 };
+levels[cont++] = { tipoghost: 3, numpajaros: 4, bg: 'f16.jpg', txt: 'Big Ben', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.1 };
+levels[cont++] = { tipoghost: 0, numpajaros: 4, bg: 'f17.jpg', txt: 'Pisa Tower', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.2 };
+levels[cont++] = { tipoghost: 1, numpajaros: 4, bg: 'f18.jpg', txt: 'Taj Majal', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.3 };
+levels[cont++] = { tipoghost: 2, numpajaros: 4, bg: 'f19.jpg', txt: 'Coliseo', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.4 };
+levels[cont++] = { tipoghost: 3, numpajaros: 4, bg: 'f20.jpg', txt: 'Cristo Rey', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.4 };
+levels[cont++] = { tipoghost: 0, numpajaros: 5, bg: 'f21.jpg', txt: 'Himalaya', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.5 };
+levels[cont++] = { tipoghost: 1, numpajaros: 5, bg: 'f22.jpg', txt: 'Niagara Falls', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.5 };
+levels[cont++] = { tipoghost: 2, numpajaros: 5, bg: 'f23.jpg', txt: 'Notre Dame', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 2.5 };
+levels[cont++] = { tipoghost: 0, numpajaros: 1, bg: 'f24.jpg', txt: 'Burj Khalifa (Final)', fuel: 200, julkclave: 'xxx', traptipo: 0, speed: 0.1 };
 
 //taj majal, torre de pisa, big ben, cristo rey,central park,niagara falls,notra dame,Burj Khalifa
 var key = "SXGWLZPDOKFIVUHJYTQBNMACERxswgzldpkoifuvjhtybqmncare";
 for (var i = 0; i < levels.length; i++) {
-    levels[i].clave = encodeStr(levels[i].txt)
+    levels[i].julkclave = encodeStr(levels[i].txt)
 
 }
 //ojo
 /*
 for (var i=0;i<levels.length;i++){
-document.writeln("<br/><br/>$fases["+i+"]='"+ levels[i].clave + "';");
+document.writeln("<br/><br/>$fases["+i+"]='"+ levels[i].julkclave + "';");
 }
 */
 
@@ -233,7 +233,7 @@ function listCookies() {
     if (window.JSInterface != undefined) {
 
         var lista = window.JSInterface.listCookies();
-//        alert("devuelto lista:" + lista)
+        //alert("devuelto lista:" + lista)
         return lista.split("|");
     } else {
         var theCookies = document.cookie.split(';');
@@ -257,9 +257,12 @@ function getGlobalSituation() {
     for (i = 0; i < misfases.length; i++) {
         //nombre de la fase|pos en el array de fases|estrellas
         var aux = misfases[i].split("=");
-        aux[0] = parseInt(aux[0].replace("level", "").trim());
+        aux[0] = parseInt(aux[0].replace("level00", "").replace("level0","").trim());
+		
         aux[1] = aux[1].split("-");
-        salida = salida + "<li onclick=\"ira('" + levels[aux[0]].clave + ".html');ML.sounds['button'].play()\" id='thumb_" + aux[0] + "' class='thumbfases'>" + "<img src='stars" + aux[1][0] + ".png'/><br/>" + levels[aux[0]].txt + "(" + parseInt(aux[1][1]) + " pts)</li>";
+        if (aux[0]!=0){
+        salida = salida + "<li onclick=\"ira('" + levels[aux[0]].julkclave + ".html');ML.sounds['button'].play()\" id='thumb_" + aux[0] + "' class='thumbfases'>" + "<img src='stars" + aux[1][0] + ".png'/><br/>" + levels[aux[0]].txt + "(" + parseInt(aux[1][1]) + " Points)</li>";
+        }
     }
     salida = salida + "</ul>";
     return salida;

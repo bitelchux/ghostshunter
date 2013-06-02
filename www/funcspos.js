@@ -839,7 +839,7 @@ function hideGame() {
     $("#divcanvas").hide()
     $("#divfondo").hide()
 }
-function updateStars(level, f) {
+function updateStars2(level, f) {
 /*
     var oldf = getCookie("level" + level);
     if (oldf != undefined) {
@@ -859,24 +859,22 @@ function updateStars(level, f) {
         }
         f = f + ((f * level) / 50);
         f = parseInt(f * 100);
+		//alert("cook"+pad(level, 3));
         setCookie("level" + pad(level, 3), stars + "-" + f, new Date("January 01, 2020 00:00:01"));
+		return stars;
     }
+}
+function updateStars(){
+    //alert(currentlevel)
+    return updateStars2(currentlevel, fuel);
+
 }
 function timeoutnextlevel() {
     hideGame();
     //           pauseAllSfx();
     ML.sounds["misionfinished"].play();
     $("#divnextlevel").fadeIn("slow")
-    var stars = 1;
-
-    if (fuel > 80) {
-        stars = 2;
-    }
-    if (fuel > 140) {
-        stars = 3;
-    }
-    updateStars(currentlevel, fuel);
-
+	var stars=updateStars();
     $("#stars" + stars).fadeIn("slow");
     clearTimeout(timeraux)
     gamestatus = 666;
@@ -892,9 +890,9 @@ function ira(donde) {
 function gotonext() {
     $("#divloading").fadeIn("slow");
     $("#divnextlevel").hide()
-
+	updateStars();
     if (currentlevel < levels.length - 1) {
-        ira(levels[parseInt(currentlevel) + 1].clave + ".html");
+        ira(levels[parseInt(currentlevel) + 1].julkclave + ".html");
     } else {
         hideGame();
         $("#divloading").fadeOut("slow");
@@ -906,7 +904,7 @@ function gotonext() {
 function gotosavedlevel() {
     $("#divmenu").hide()
     $("#divloading").fadeIn("slow")
-    ira(levels[parseInt(getCookie("ghostlevel")) + 1].clave + ".html");
+    ira(levels[parseInt(getCookie("ghostlevel")) + 1].julkclave + ".html");
 }
 function btexit() {
 $("body").hide();
@@ -920,6 +918,7 @@ $("body").hide();
 function btback() {
 $("body").hide();
     ML.sounds["button"].play();
+	updateStars();
     if (window.JSInterface != undefined) {
         document.location.href='index.html'
     }else{
@@ -940,16 +939,19 @@ function btstart() {
     $("#divmenu").hide()
     $("#divloading").fadeIn("slow")
     ML.sounds["button"].play();
-    ira(levels[1].clave + ".html");
+	
+    ira(levels[1].julkclave + ".html");
 }
 function btgameover() {
+bttryagain();
+return true;
     $("#divgameover").hide()
     $("#divloading").fadeIn("slow")
     ML.sounds["button"].play();
     if (getCookie("ghostlevel") != "") {
-        ira(levels[parseInt(currentlevel)].clave + ".html");
+        ira(levels[parseInt(currentlevel)].julkclave + ".html");
     } else {
-        ira(levels[1].clave + ".html");
+        ira(levels[1].julkclave + ".html");
     }
 }
 function bttryagain() {
@@ -957,7 +959,7 @@ function bttryagain() {
     ML.sounds["button"].play();
     $("#divgamefinished").hide()
     $("#divloading").fadeIn("slow")
-    ira('/');
+    ira(levels[parseInt(currentlevel)].julkclave + ".html");
 }
 function clearCanvas() {
     c.width = c.width
@@ -1031,7 +1033,15 @@ function doAnimation() {
                 testclick();
             }
             if (paintRecal) {
+			/*
+				if (screenh/screenw>1 && screenh/screenw<1.8){
+				mydrawimage(fondo.div, ML.sprites["fondo"], 0, 0, realw, realh);
+				alert(realw +" " + realh);
+				}else{
                 mydrawimage(fondo.div, ML.sprites["fondo"], 0, 0, fondo.w * ratiow, fondo.h * ratioh);
+				}
+			*/
+				mydrawimage(fondo.div, ML.sprites["fondo"], 0, 0, fondo.w * ratiow, fondo.h * ratioh);
                 paintRecal = false;
             }
             if (loadingweapon > 0 && !waiting) {
@@ -1210,6 +1220,7 @@ function initengine() {
 
 }
 var antwidth = 0;
+var screenw,screenh;
 function resize() {
     if (antwidth == $(window).width()) {
         return;
@@ -1218,7 +1229,8 @@ function resize() {
     ratiow = $(window).width() / miw;
     ratioh = $(window).height() / mih;
 
-
+	screenw=$(window).width();
+	screenh=$(window).height();
     ratiow = Math.min(ratiow, ratioh);
     ratioh = Math.min(ratiow * 1.3, ratioh);
     //	    alert(ratiow + " - " + ratioh)
@@ -1301,7 +1313,7 @@ function initTouchs() {
                 ticker.msg.push("GO!!!");
                 ticker.msg.push("Ready??");
                 if (currentlevel==1){
-                ticker.msg.push("So DONT tap like mad...your energy is limited");
+                ticker.msg.push("So DONT tap as mad...your energy is limited");
                 ticker.msg.push("When you tap, if you miss the shot, your energy will decrease");
                 ticker.msg.push("Single tap the ghosth and catch it!");
                 }
@@ -1353,11 +1365,13 @@ function initTouchs() {
                 doAnimation()
                 ticker.pausar = true;
                 ticker.msg.push("Go!!!");
-                ticker.msg.push("Ready!!!");
-                ticker.msg.push("So DONT tap as a mad man");
+                ticker.msg.push("Ready?");
+				if (currentlevel==1){
+                ticker.msg.push("So DONT tap as mad...your energy is limited");
                 ticker.msg.push("When you tap, if you miss the shot, your energy will decrease");
                 ticker.msg.push("Single tap the ghosth and catch it!");
-                ticker.callback = function () {
+                }
+				   ticker.callback = function () {
                     waiting = false;
                 }
                 ticker.activate();
@@ -1423,7 +1437,7 @@ function initTouchs() {
         }
     }
     if (currentlevel != "") {
-        updateStars(currentlevel, 0);
+        updateStars2(currentlevel, 0);
         ML.spritessrcs.push("blank|blank.png|" + ratiow + "|" + ratioh)
         ML.spritessrcs.push("donde0|donde0.gif|" + ratiow + "|" + ratioh)
 
