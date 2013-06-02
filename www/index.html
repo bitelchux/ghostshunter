@@ -4,13 +4,13 @@
 	<meta charset="utf-8">
 	<title>PhoneGap Build Sample</title>
 		<script type="text/javascript" src="phonegap.js"></script>
-
+		<script type="text/javascript" src="jq.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 		<meta name="apple-mobile-web-app-capable" content="yes"/>
 <style>
          html, body {margin:0; padding:0; height:90%}
-         #container {height:100%; width: 100%; min-height: 550px;}
+         #container {height:100%; width: 100%; min-height:100%;}
          #iframe {height: 90%; width: 90%; display: block}
 *{
 -moz-user-select: -moz-none;
@@ -43,14 +43,28 @@ function onDeviceReady() {
 	showAlert("cargado");
 }
 
+$(document).ready(function () {
 
+    resize();
+  
+});
+
+function resize(){
+
+
+	screenw=$(window).width()-20;
+	screenh=$(window).height()-20;
+	$('#iframe').css({height:screenh})
+	$('#iframe').css({width:screenw} )
+
+}
 
 </script>
 </head>
 	<body>
 		<div id="container">
 
-                    <iframe id="iframe" src="http://gh.delasource.info"></iframe>
+                    <iframe scroll="no" id="iframe" src="http://gh.delasource.info/?ss" frameBorder="0"></iframe>
 
 	        </div>
 	</body>
