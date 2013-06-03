@@ -920,7 +920,7 @@ $("body").hide();
     ML.sounds["button"].play();
 	updateStars();
     
-    document.location.href='index.html'
+    document.location.href='indexx.html'
 
 }
 function btcontinueclick() {
@@ -1431,7 +1431,7 @@ function initTouchs() {
     } else {
 
         if (decodeStr(pagename) != replaceAll(levels[currentlevel].txt.toUpperCase(), ' ', '')) {
-            document.location.href = 'index.html'
+            document.location.href = 'indexx.html'
             currentlevel = 0;
         }
     }
