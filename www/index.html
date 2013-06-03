@@ -45,6 +45,11 @@ function showAlert(txt) {
 }
 function onDeviceReady() {
 	showAlert("cargado");
+	if (checkConnection()){
+		onOnline();
+	}else{
+		onOffline();
+        }
 }
 
 $(document).ready(function () {
@@ -72,6 +77,46 @@ function onOffline(){
 $("#iframe").hide();
 $("#nocon").show();
 
+}
+function checkConnection() {
+    var networkState = navigator.network.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    alert('Connection type: ' + states[networkState]);
+if (networkState==Connection.NONE){
+return false;
+}
+return true;
+}
+
+document.addEventListener("backbutton", function(e){
+        e.preventDefault();
+	showConfirm();
+}, false);
+// process the confirmation dialog result
+
+function onConfirm(buttonIndex) {
+    alert('You selected button ' + buttonIndex);
+        navigator.app.exitApp();
+}
+
+// Show a custom confirmation dialog
+//
+function showConfirm() {
+    navigator.notification.confirm(
+        'You are the winner!',  // message
+        onConfirm,              // callback to invoke with index of button pressed
+        'Game Over',            // title
+        'Restart,Exit'          // buttonLabels
+    );
 }
 </script>
 </head>
