@@ -919,11 +919,8 @@ function btback() {
 $("body").hide();
     ML.sounds["button"].play();
 	updateStars();
-    if (window.JSInterface != undefined) {
-        document.location.href='index.html'
-    }else{
-        document.location.href='/'
-    }
+    
+    document.location.href='index.html'
 
 }
 function btcontinueclick() {
@@ -1263,7 +1260,7 @@ function resize() {
         }
     });
 }
-
+var timersound=null;
 function initTouchs() {
     if (typeof (document.body.ontouchstart) == "undefined") {
         document.getElementById("divcanvas").onclick = function (e) {
@@ -1287,7 +1284,9 @@ function initTouchs() {
             if (gamestatus == 0) {
                 contclick = 2;
                 if (!waiting && loadingweapon <= 0) {
-                    ML.sounds["pium"].play();
+					window.clearInterval(timersound)
+					timersound=setTimeout(function(){ML.sounds["pium"].play();},500)
+                    
 
                 }
             }
