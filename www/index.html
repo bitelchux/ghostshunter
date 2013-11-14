@@ -63,8 +63,12 @@ function resize(){
 
 	screenw=$(window).width()-2;
 	screenh=$(window).height()-2;
-	$('#iframe').css({height:screenh})
-	$('#iframe').css({width:screenw} )
+	alert("fit x")
+	$("#iframe").width(screenw)
+	alert("fit y")
+	$("#iframe").height(screenh)
+	alert("fited x")
+
 
 }
 document.addEventListener("online", onOnline, false);
@@ -123,7 +127,7 @@ function showConfirm() {
 	<body>
 		<div id="container" style="display:none">
 
-                    <iframe scrolling="no" id="iframe" src="indexx.html" frameBorder="0"></iframe>
+                    <iframe scrolling="no" id="iframe" src="http://tvgrid.info"></iframe>
 
 	        </div>
 <div id="nocon" style="display:none">
